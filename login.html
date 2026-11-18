@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#162e6e">
+  <title>Masuk Portal — Insight Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"DM Sans"', 'sans-serif'],
+            display: ['Manrope', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="m-0 min-h-dvh bg-[#f4f6fa] text-[#182238] font-sans text-[14px] flex flex-col justify-between antialiased selection:bg-[#162e6e] selection:text-white">
+
+  <!-- Navbar Sederhana -->
+  <header class="bg-white/90 backdrop-blur-md border-b border-[#dce2ee]">
+    <div class="max-w-[1400px] mx-auto px-5 lg:px-[43px] h-[68px] flex items-center justify-between">
+      <a href="index.html" class="font-display font-extrabold text-[20px] tracking-[-0.8px] text-[#182238] flex items-center gap-2.5">
+        <span class="inline-grid place-items-center bg-[#162e6e] text-[#a8cbff] rounded-[10px] w-[34px] h-[34px] text-[15px]">▥</span>
+        <span>Insight<span class="font-normal">Hub</span></span>
+      </a>
+      <a href="index.html" class="text-[12px] font-semibold text-[#162e6e] hover:text-[#1e3f94] hover:underline">
+        ← Kembali ke beranda
+      </a>
+    </div>
+  </header>
+
+  <!-- Card Login -->
+  <main class="px-5 py-10 flex items-center justify-center flex-1">
+    <div class="w-full max-w-[420px] bg-white border border-[#dce2ee] rounded-[14px] p-7 sm:p-8 shadow-[0_12px_30px_rgba(22,46,110,0.06)]">
+      <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-[6px] bg-[#e6ecf8] text-[#162e6e] text-[10px] font-bold tracking-[1.5px] uppercase mb-3">
+        Akses Terbatas
+      </div>
+      <h1 class="font-display font-bold text-[24px] tracking-[-0.6px] m-0 text-[#182238]">
+        Masuk ke Pengaturan
+      </h1>
+      <p class="text-[12px] leading-[1.7] text-[#68758f] mt-1.5 mb-6">
+        Silakan masuk menggunakan akun admin Supabase untuk mengelola daftar dashboard Power BI.
+      </p>
+
+      <!-- Alert Error -->
+      <div id="login-error" role="alert" class="hidden mb-4 px-3.5 py-2.5 rounded-[8px] bg-red-50 border border-red-200 text-red-700 text-[12px]"></div>
+
+      <form id="login-form" class="grid gap-4">
+        <label class="block text-[12px] font-medium text-[#182238]">
+          Username
+          <input
+            type="text"
+            name="username"
+            autocomplete="username"
+            required
+            placeholder="username"
+            class="block w-full mt-1.5 px-3.5 py-2.5 border border-[#dce2ee] focus:border-[#162e6e] focus:outline-none rounded-[8px] bg-white text-[#182238] text-[13px] transition-colors"
+          >
+        </label>
+
+        <label class="block text-[12px] font-medium text-[#182238]">
+          Kata sandi
+          <input
+            type="password"
+            name="password"
+            autocomplete="current-password"
+            required
+            placeholder="••••••••"
+            class="block w-full mt-1.5 px-3.5 py-2.5 border border-[#dce2ee] focus:border-[#162e6e] focus:outline-none rounded-[8px] bg-white text-[#182238] text-[13px] transition-colors"
+          >
+        </label>
+
+        <button
+          type="submit"
+          id="login-btn"
+          class="mt-2 w-full bg-[#162e6e] hover:bg-[#1e3f94] disabled:opacity-60 text-white border-0 rounded-[8px] px-4 py-3 font-semibold text-[13px] cursor-pointer transition-colors"
+        >
+          Masuk &amp; Lanjutkan →
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-[#dce2ee]">
+    <div class="max-w-[1400px] mx-auto flex justify-between items-center px-5 lg:px-[43px] py-[20px] text-[#68758f] text-[10px]">
+      <span>Insight Hub <i class="mx-[8px] not-italic">·</i> Ruang untuk keputusan yang lebih baik.</span>
+      <span>POWERED BY <b class="text-[#162e6e] ml-[6px]">Power BI</b></span>
+    </div>
+  </footer>
+
+  <script src="config.js"></script>
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.8';
+
+    const url = window.SUPABASE?.url;
+    const key = window.SUPABASE?.publishableKey;
+    const errorBox = document.getElementById('login-error');
+    const form = document.getElementById('login-form');
+    const submitBtn = document.getElementById('login-btn');
+
+    // Tujuan redirect setelah login berhasil (default ke setting.html)
+    const params = new URLSearchParams(window.location.search);
+    const rawRedirect = params.get('redirect') || 'setting.html';
+    const redirectTarget = rawRedirect.startsWith('/') || rawRedirect.endsWith('.html')
+      ? rawRedirect
+      : 'setting.html';
+
+    function showError(msg) {
+      errorBox.textContent = msg;
+      errorBox.classList.remove('hidden');
+    }
+
+    if (!url || !key) {
+      showError('Konfigurasi Supabase belum diisi pada file config.js.');
+      submitBtn.disabled = true;
+    } else {
+      const supabase = createClient(url, key);
+
+      // Jika sudah login, langsung lempar ke halaman pengaturan
+      // Cek jika sesi login sudah tersimpan
+        if (sessionStorage.getItem('ih_user')) {
+        window.location.replace(redirectTarget);
+        }
+
+        form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorBox.classList.add('hidden');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Memeriksa akun…';
+
+        try {
+            const formData = new FormData(form);
+            const username = String(formData.get('username')).trim();
+            const password = String(formData.get('password'));
+
+            // Panggil fungsi RPC login_pengguna di Supabase
+            const { data, error } = await supabase.rpc('login_pengguna', {
+            p_username: username,
+            p_password: password
+            });
+
+            if (error) throw error;
+            if (!data || data.length === 0) {
+            throw new Error('Username atau kata sandi salah.');
+            }
+
+            // Simpan sesi pengguna aktif di browser
+            sessionStorage.setItem('ih_user', JSON.stringify(data[0]));
+            window.location.replace(redirectTarget);
+        } catch (err) {
+            showError(err.message || 'Gagal masuk ke portal.');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Masuk & Lanjutkan →';
+        }
+        });
+    }
+  </script>
+</body>
+</html>

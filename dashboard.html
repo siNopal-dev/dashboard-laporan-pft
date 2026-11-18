@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#162e6e">
+  <meta name="description" content="Satu tempat untuk seluruh dashboard Anda.">
+  <title>Insight Hub — Portal Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"DM Sans"', 'sans-serif'],
+            display: ['Manrope', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+</head>
+<body id="app-body" class="hidden m-0 bg-[#f4f6fa] text-[#182238] font-sans text-[14px] antialiased selection:bg-[#162e6e] selection:text-white">
+
+  <!-- Top Navbar (Tanpa Sidebar) -->
+  <header class="sticky top-0 z-20 bg-white/90 backdrop-blur-md border-b border-[#dce2ee]">
+    <div class="max-w-[1400px] mx-auto px-5 md:px-[25px] lg:px-[43px]">
+      <div class="h-[64px] lg:h-[76px] flex items-center justify-between gap-4">
+        <!-- Kiri: Brand -->
+        <div class="flex items-center gap-6 lg:gap-8">
+          <a href="#home" class="flex items-center shrink-0">
+            <img
+              src="logo-pft.jpeg"
+              alt="PT. Prima Fara Textile"
+              class="h-[32px] sm:h-[36px] lg:h-[40px] w-auto object-contain mix-blend-multiply">
+          </a>
+        </div>
+
+        <!-- Kanan: Pengaturan, Keluar & Profil -->
+        <div class="flex items-center gap-2.5 lg:gap-4">
+          <a href="setting.html" class="px-3.5 py-2 rounded-[8px] text-[12px] lg:text-[13px] flex items-center gap-2 text-[#68758f] hover:bg-[#f4f6fa] hover:text-[#182238] font-medium transition-colors">
+            <span>⚙</span>
+            <span>Pengaturan laporan</span>
+          </a>
+
+          <button type="button" id="nav-logout-btn" class="bg-white border border-[#dce2ee] hover:border-red-300 hover:bg-red-50 text-red-700 rounded-[7px] px-3 py-1.5 lg:px-3.5 lg:py-2 text-[11px] lg:text-[12px] font-semibold cursor-pointer transition-colors">
+            Keluar
+          </button>
+
+          <div class="hidden sm:flex items-center gap-2.5 pl-2 lg:pl-3 border-l border-[#dce2ee]">
+            <span id="nav-avatar" class="bg-[#e6ecf8] text-[#162e6e] font-bold rounded-full grid place-items-center w-[34px] h-[34px] text-[12px]">A</span>
+            <div class="hidden lg:block leading-tight">
+              <div id="nav-user-name" class="text-[12px] font-semibold text-[#182238]">Admin Portal</div>
+              <span id="nav-user-sub" class="text-[10px] text-[#68758f] uppercase">admin</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Konten Utama -->
+  <main id="home" class="px-5 py-[26px] md:px-[25px] md:py-[30px] lg:px-[43px] lg:py-[40px] min-h-[calc(100dvh-140px)] max-w-[1400px] mx-auto">
+    <!-- Judul Halaman -->
+    <div class="text-[10px] tracking-[2px] font-bold text-[#162e6e]">WORKSPACE ANALITIK</div>
+    <div class="flex items-end justify-between mt-[8px] mb-[27px]">
+      <div>
+        <h1 class="font-display font-bold text-[27px] lg:text-[30px] tracking-[-1px] mt-[7px] mb-[10px] text-[#182238]">
+          Semua insight, satu tempat.
+        </h1>
+        <p class="text-[#68758f] text-[12px] lg:text-[14px] leading-[1.7] m-0">
+          Akses dashboard laporan setiap departemen di PT. Prima Fara Textile.
+        </p>
+      </div>
+      <span id="current-date" class="hidden md:inline-block text-[12px] text-[#68758f] pb-[5px]"></span>
+    </div>
+
+    <!-- Hero Banner -->
+    <section class="bg-[#112457] text-white rounded-[15px] p-[25px] lg:px-[35px] lg:py-[32px] relative overflow-hidden flex justify-between min-h-[200px] lg:min-h-[204px]">
+      <div class="z-[1] max-w-[85%] sm:max-w-[470px]">
+        <div class="text-[10px] tracking-[2px] font-bold text-[#a8cbff]">DARI DATA MENJADI ARAH</div>
+        <h2 class="font-display font-semibold text-[22px] lg:text-[26px] tracking-[-0.8px] leading-[1.25] mt-[14px] mb-[10px]">
+          Keputusan hebat dimulai<br>dari insight yang tepat.
+        </h2>
+        <p class="text-[#c5d4f2] text-[12px] leading-[1.7] max-w-[340px] m-0">
+          Jelajahi laporan interaktif departemen Anda, kapan saja dan dari perangkat apa saja.
+        </p>
+        <a href="#katalog" class="inline-block text-[#e6ecf8] border border-[#35539c] hover:bg-[#162e6e] rounded-[30px] px-[12px] py-[6px] mt-[14px] text-[10px] font-medium transition-colors">
+          ↗ &nbsp; Workspace Dashboard Anda
+        </a>
+      </div>
+
+      <!-- Ilustrasi Grafik Murni CSS -->
+      <div aria-hidden="true" class="w-[180px] sm:w-[200px] lg:w-[240px] flex items-end gap-[13px] px-[30px] pt-[10px] pb-[5px] -rotate-9 absolute -right-[45px] bottom-0 sm:static h-[150px] sm:h-auto opacity-35 sm:opacity-100 pointer-events-none">
+        <div class="absolute w-[250px] h-[250px] border border-[#2a478f] rounded-full -top-[28px] -left-[8px]"></div>
+        <div class="absolute w-[320px] h-[320px] border border-[#2a478f] rounded-full -top-[65px] -left-[43px]"></div>
+        <span class="z-[1] flex-1 bg-[#7aa4eb] rounded-t-[7px] rounded-b-[2px] h-[45%]"></span>
+        <span class="z-[1] flex-1 bg-[#a8cbff] rounded-t-[7px] rounded-b-[2px] h-[75%]"></span>
+        <span class="z-[1] flex-1 bg-[#f3d46b] rounded-t-[7px] rounded-b-[2px] h-full"></span>
+      </div>
+    </section>
+
+    <!-- Ringkasan Statistik Dinamis (2 Kolom) -->
+    <section aria-label="Ringkasan portal" class="grid grid-cols-2 gap-[10px] lg:gap-[17px] mt-[22px] mb-[28px] lg:mb-[37px]">
+      <div class="block sm:flex items-center gap-[10px] lg:gap-[16px] bg-white p-[13px] md:p-[15px] lg:px-[21px] lg:py-[19px] border border-[#dce2ee] rounded-[10px]">
+        <span class="text-[15px] lg:text-[21px] bg-[#e6ecf8] text-[#162e6e] rounded-[10px] w-[29px] h-[29px] lg:w-[42px] lg:h-[42px] grid place-items-center mb-[12px] sm:mb-0 shrink-0">▦</span>
+        <div>
+          <strong id="stat-total" class="font-display font-bold text-[20px] lg:text-[23px] text-[#182238] block leading-none">00</strong>
+          <small class="block text-[#68758f] text-[9px] lg:text-[11px] mt-[4px]">Dashboard tersedia</small>
+        </div>
+      </div>
+
+      <div class="block sm:flex items-center gap-[10px] lg:gap-[16px] bg-white p-[13px] md:p-[15px] lg:px-[21px] lg:py-[19px] border border-[#dce2ee] rounded-[10px]">
+        <span class="text-[15px] lg:text-[21px] bg-[#e6ecf8] text-[#162e6e] rounded-[10px] w-[29px] h-[29px] lg:w-[42px] lg:h-[42px] grid place-items-center mb-[12px] sm:mb-0 shrink-0">◈</span>
+        <div>
+          <strong id="stat-linked" class="font-display font-bold text-[20px] lg:text-[23px] text-[#182238] block leading-none">00</strong>
+          <small class="block text-[#68758f] text-[9px] lg:text-[11px] mt-[4px]">Tautan terhubung</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- Katalog Dashboard dari Supabase -->
+    <section id="katalog" class="scroll-mt-24">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-[16px] mb-[20px]">
+        <div class="flex items-center flex-wrap gap-2">
+          <h2 class="font-display font-bold text-[18px] m-0 text-[#182238]">
+            Jelajahi dashboard
+            <span id="result-count" class="text-[11px] bg-[#e6ecf8] text-[#162e6e] rounded-[6px] px-[7px] py-[3px] ml-[6px] font-semibold">0</span>
+          </h2>
+          <span id="source-badge" class="hidden text-[10px] font-medium px-2 py-0.5 rounded bg-white border border-[#dce2ee] text-[#68758f]"></span>
+        </div>
+
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <input
+            type="search"
+            id="search-input"
+            aria-label="Cari dashboard"
+            placeholder="⌕   Cari dashboard…"
+            class="w-full sm:w-[240px] bg-white border border-[#dce2ee] focus:border-[#162e6e] focus:outline-none rounded-[7px] px-[14px] py-[10px] text-[12px] text-[#182238] transition-colors"
+          >
+          <button
+            type="button"
+            id="reload-btn"
+            title="Muat ulang data dari Supabase"
+            aria-label="Muat ulang data"
+            class="shrink-0 bg-white border border-[#dce2ee] hover:border-[#162e6e]/50 hover:bg-[#e6ecf8]/50 text-[#182238] rounded-[7px] px-[11px] py-[10px] text-[12px] font-semibold cursor-pointer transition-colors"
+          >
+            ↻
+          </button>
+          <a href="setting.html" class="shrink-0 bg-[#162e6e] hover:bg-[#1e3f94] text-white rounded-[7px] px-[13px] py-[10px] text-[11px] font-semibold transition-colors">
+            ⚙ Kelola
+          </a>
+        </div>
+      </div>
+
+      <!-- Tab Filter Kategori Dinamis -->
+      <div id="filter-bar" role="tablist" aria-label="Filter kategori dashboard" class="flex gap-[9px] mb-[23px] flex-wrap"></div>
+
+      <!-- Grid Kartu Dashboard -->
+      <div id="cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[19px]">
+        <div class="col-span-full bg-white border border-[#dce2ee] rounded-[12px] py-14 px-5 text-center text-[12px] text-[#68758f]">
+          Memuat daftar dashboard dari Supabase…
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-[#dce2ee]">
+    <div class="max-w-[1400px] mx-auto flex justify-between items-center px-5 md:px-[25px] lg:px-[43px] py-[20px] lg:py-[22px] text-[#68758f] text-[9px] lg:text-[10px]">
+      <span>Insight Hub <i class="mx-[8px] not-italic">·</i> Ruang untuk keputusan yang lebih baik.</span>
+      <span class="hidden sm:inline">POWERED BY <b class="text-[#162e6e] ml-[6px]">Power BI</b></span>
+    </div>
+  </footer>
+
+  <!-- Modal Viewer Dashboard -->
+  <dialog id="viewer-dialog" class="rounded-[14px] border border-[#dce2ee] p-0 bg-white text-[#182238] shadow-2xl w-[96%] max-w-[1280px] backdrop:bg-[#112457]/60">
+    <div class="flex flex-col">
+      <!-- Toolbar Modal -->
+      <div class="px-5 py-3.5 border-b border-[#dce2ee] flex flex-wrap items-center justify-between gap-3 bg-white">
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <span id="viewer-category" class="text-[10px] font-bold uppercase tracking-[1px] px-2 py-0.5 rounded bg-[#e6ecf8] text-[#162e6e]">Kategori</span>
+            <h3 id="viewer-title" class="font-display font-bold text-[16px] m-0 text-[#182238] truncate">Judul Dashboard</h3>
+          </div>
+          <p id="viewer-desc" class="text-[11px] text-[#68758f] mt-0.5 mb-0 truncate"></p>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <button type="button" id="viewer-reload" class="bg-white border border-[#dce2ee] hover:border-[#162e6e] hover:bg-[#e6ecf8]/50 text-[#182238] rounded-[7px] px-3 py-1.5 text-[11px] font-semibold cursor-pointer transition-colors">
+            ↻ Muat ulang
+          </button>
+          <button type="button" id="viewer-fullscreen" class="bg-white border border-[#dce2ee] hover:border-[#162e6e] hover:bg-[#e6ecf8]/50 text-[#182238] rounded-[7px] px-3 py-1.5 text-[11px] font-semibold cursor-pointer transition-colors">
+            ⛶ Layar penuh
+          </button>
+          <a id="viewer-external" href="#" target="_blank" rel="noopener noreferrer" class="bg-[#162e6e] hover:bg-[#1e3f94] text-white rounded-[7px] px-3 py-1.5 text-[11px] font-semibold transition-colors">
+            Buka di tab baru ↗
+          </a>
+          <button type="button" id="viewer-close" aria-label="Tutup tampilan dashboard" class="bg-[#f4f6fa] hover:bg-red-50 hover:text-red-700 border border-[#dce2ee] text-[#182238] rounded-[7px] px-3 py-1.5 text-[11px] font-bold cursor-pointer transition-colors">
+            ✕ Tutup
+          </button>
+        </div>
+      </div>
+
+      <!-- Area Iframe -->
+      <div class="p-3 sm:p-4 bg-[#f4f6fa]">
+        <iframe id="viewer-frame" title="Tampilan Dashboard" allowfullscreen class="w-full h-[72vh] border border-[#dce2ee] rounded-[10px] bg-white"></iframe>
+        <p class="text-[11px] text-[#68758f] mt-2.5 mb-0">
+          Jika halaman tidak tampil di dalam bingkai (misalnya karena kebijakan keamanan situs atau memerlukan login), klik tombol <b>Buka di tab baru ↗</b> di pojok kanan atas.
+        </p>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Toast Notification -->
+  <div id="toast" role="status" aria-live="polite" class="hidden fixed bottom-[25px] left-1/2 -translate-x-1/2 bg-[#112457] text-white border border-[#2a478f] px-[20px] py-[12px] rounded-[8px] shadow-lg z-30 text-[12px] font-medium"></div>
+
+  <script src="config.js"></script>
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.8';
+
+    const $ = (sel) => document.querySelector(sel);
+
+    // 1. AUTH GUARD
+    const rawUser = sessionStorage.getItem('ih_user');
+    if (!rawUser) {
+      window.location.replace('login.html?redirect=dashboard.html');
+      throw new Error('Belum login, mengalihkan ke halaman login...');
+    }
+
+    let currentUser;
+    try {
+      currentUser = JSON.parse(rawUser);
+    } catch {
+      sessionStorage.removeItem('ih_user');
+      window.location.replace('login.html?redirect=dashboard.html');
+      throw new Error('Data sesi tidak valid.');
+    }
+
+    if (!currentUser?.token) {
+      sessionStorage.removeItem('ih_user');
+      window.location.replace('login.html?redirect=dashboard.html');
+      throw new Error('Token sesi tidak ditemukan.');
+    }
+
+    // Tampilkan halaman dan info profil pengguna
+    $('#app-body').classList.remove('hidden');
+    if (currentUser?.username) {
+      $('#nav-avatar').textContent = currentUser.username[0].toUpperCase();
+      $('#nav-user-name').textContent = currentUser.username;
+      $('#nav-user-sub').textContent = currentUser.role || 'admin';
+    }
+
+    const esc = (str) => String(str ?? '').replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[c]));
+
+    const SUPABASE_URL = (window.SUPABASE?.url || '').trim();
+    const SUPABASE_KEY = (window.SUPABASE?.publishableKey || '').trim();
+    const isSupabaseConfigured = Boolean(
+      SUPABASE_URL &&
+      SUPABASE_KEY &&
+      !SUPABASE_URL.includes('PROJECT-ID-ANDA') &&
+      !SUPABASE_KEY.includes('ISI_PUBLISHABLE_KEY')
+    );
+
+    const supabase = isSupabaseConfigured
+      ? createClient(SUPABASE_URL, SUPABASE_KEY, {
+          auth: {
+            persistSession: false,
+            autoRefreshToken: false
+          }
+        })
+      : null;
+
+    // Mendukung semua tautan HTTP / HTTPS yang valid
+    function isValidUrl(urlStr) {
+      if (!urlStr) return false;
+      try {
+        const u = new URL(urlStr.trim());
+        return ['http:', 'https:'].includes(u.protocol);
+      } catch {
+        return false;
+      }
+    }
+
+    function normalizeReport(row) {
+      return {
+        id: String(row.id ?? ''),
+        title: row.title || 'Tanpa Judul',
+        category: row.category || 'Lainnya',
+        description: row.description || '',
+        icon: row.icon || '▤',
+        embedUrl: (row.embed_url ?? row.embedUrl ?? row.url ?? '').trim(),
+        createdAt: row.created_at || ''
+      };
+    }
+
+    let toastTimer;
+    function showToast(msg) {
+      const el = $('#toast');
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.add('hidden'), 4000);
+    }
+
+    const state = {
+      reports: [],
+      activeCategory: 'Semua',
+      searchQuery: '',
+      loadError: null
+    };
+
+    const dateEl = $('#current-date');
+    if (dateEl) {
+      dateEl.textContent = new Intl.DateTimeFormat('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      }).format(new Date());
+    }
+
+    function updateStats() {
+      const total = state.reports.length;
+      const linked = state.reports.filter((r) => isValidUrl(r.embedUrl)).length;
+
+      const totalEl = $('#stat-total');
+      const linkedEl = $('#stat-linked');
+      if (totalEl) totalEl.textContent = String(total).padStart(2, '0');
+      if (linkedEl) linkedEl.textContent = String(linked).padStart(2, '0');
+    }
+
+    function renderFilters() {
+      const uniqueCategories = [...new Set(state.reports.map((r) => r.category).filter(Boolean))];
+      const tabs = ['Semua', ...uniqueCategories];
+
+      if (!tabs.includes(state.activeCategory)) {
+        state.activeCategory = 'Semua';
+      }
+
+      $('#filter-bar').innerHTML = tabs.map((cat) => {
+        const isActive = state.activeCategory === cat;
+
+        return `
+          <button
+            type="button"
+            role="tab"
+            aria-selected="${isActive}"
+            data-cat="${esc(cat)}"
+            class="cursor-pointer select-none px-[15px] py-[8px] rounded-[6px] text-[11px] font-medium border transition-colors ${
+              isActive
+                ? 'bg-[#162e6e] text-white border-[#162e6e] font-semibold'
+                : 'bg-transparent border-[#dce2ee] text-[#68758f] hover:border-[#162e6e]/50 hover:text-[#182238]'
+            }"
+          >
+            ${esc(cat)}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function renderCards() {
+      const grid = $('#cards-grid');
+      const q = state.searchQuery.trim().toLowerCase();
+      const topThemes = ['bg-[#e8eef9]', 'bg-[#f4f0e6]', 'bg-[#e6f1f5]'];
+
+      if (state.loadError && !state.reports.length) {
+        $('#result-count').textContent = '0';
+        grid.innerHTML = `
+          <div class="col-span-full bg-white border border-red-200 rounded-[12px] py-12 px-5 text-center">
+            <div class="w-10 h-10 rounded-[10px] bg-red-50 text-red-600 grid place-items-center text-[18px] font-bold mx-auto mb-3">!</div>
+            <h3 class="font-display font-bold text-[16px] m-0 text-[#182238]">Gagal terhubung ke database Supabase</h3>
+            <p class="text-[12px] text-red-700 mt-1.5 mb-4 max-w-[540px] mx-auto font-mono bg-red-50/70 px-3 py-2 rounded-[6px]">
+              ${esc(state.loadError)}
+            </p>
+            <button type="button" id="retry-load-btn" class="bg-[#162e6e] hover:bg-[#1e3f94] text-white border-0 rounded-[7px] px-4 py-2 text-[12px] font-semibold cursor-pointer transition-colors">
+              ↻ Coba muat ulang
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const filtered = state.reports.filter((r) => {
+        const matchCategory =
+          state.activeCategory === 'Semua' ||
+          r.category === state.activeCategory;
+
+        const matchQuery = `${r.title} ${r.description} ${r.category}`.toLowerCase().includes(q);
+        return matchCategory && matchQuery;
+      });
+
+      $('#result-count').textContent = filtered.length;
+
+      if (!filtered.length) {
+        const isDatabaseEmpty = state.reports.length === 0 && !q && state.activeCategory === 'Semua';
+        grid.innerHTML = `
+          <div class="col-span-full bg-white border border-dashed border-[#c4cfe3] rounded-[12px] py-14 px-5 text-center">
+            <h3 class="font-display font-bold text-[16px] m-0 text-[#182238]">Belum ada dashboard di sini</h3>
+            <p class="text-[12px] text-[#68758f] mt-1.5 mb-4 max-w-[480px] mx-auto leading-[1.7]">
+              ${
+                isDatabaseEmpty
+                  ? 'Tabel <b>reports</b> di Supabase masih kosong atau akses baca (Policy RLS <code>SELECT</code> untuk <code>anon</code>) belum diaktifkan.'
+                  : 'Coba kata kunci lain, pilih kategori Semua, atau tambahkan laporan baru di halaman pengaturan.'
+              }
+            </p>
+            <a href="setting.html" class="inline-block bg-[#162e6e] hover:bg-[#1e3f94] text-white rounded-[7px] px-4 py-2 text-[12px] font-semibold transition-colors">
+              + Tambah dashboard
+            </a>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map((r, index) => {
+        const isLinked = isValidUrl(r.embedUrl);
+        const topBg = topThemes[index % topThemes.length];
+
+        return `
+          <article
+            ${isLinked ? `data-open="${esc(r.id)}" role="button" tabindex="0"` : ''}
+            class="group bg-white border border-[#dce2ee] rounded-[12px] overflow-hidden transition-all duration-200 flex flex-col ${
+              isLinked
+                ? 'cursor-pointer hover:-translate-y-[3px] hover:border-[#162e6e]/40 hover:shadow-[0_10px_20px_rgba(22,46,110,0.08)]'
+                : 'opacity-90'
+            }"
+          >
+            <div class="h-[105px] lg:h-[116px] relative ${topBg} p-[21px] shrink-0">
+              <span class="rounded-[11px] bg-white/80 text-[#162e6e] px-[13px] py-[10px] text-[22px] inline-block">${esc(r.icon)}</span>
+
+              <div aria-hidden="true" class="absolute bottom-[20px] right-[20px] flex items-end gap-[5px] h-[49px]">
+                <i class="w-[11px] rounded-t-[3px] bg-[#6e85b7]/35 h-[35%]"></i>
+                <i class="w-[11px] rounded-t-[3px] bg-[#6e85b7]/35 h-[58%]"></i>
+                <i class="w-[11px] rounded-t-[3px] bg-[#6e85b7]/35 h-[45%]"></i>
+                <i class="w-[11px] rounded-t-[3px] bg-[#6e85b7]/35 h-[78%]"></i>
+                <i class="w-[11px] rounded-t-[3px] bg-[#6e85b7]/35 h-[65%]"></i>
+                <i class="w-[11px] rounded-t-[3px] bg-[#162e6e]/45 h-full"></i>
+              </div>
+            </div>
+
+            <div class="p-[21px] flex-1 flex flex-col">
+              <span class="text-[9px] tracking-[1.2px] text-[#68758f] font-semibold uppercase">${esc(r.category)}</span>
+              <h3 class="font-display font-bold text-[17px] mt-[10px] mb-[8px] text-[#182238] group-hover:text-[#162e6e] transition-colors">${esc(r.title)}</h3>
+              <p class="text-[12px] leading-[1.7] text-[#68758f] min-h-[40px] mt-0 mb-[20px] flex-1">${esc(r.description)}</p>
+
+              <div class="border-t border-[#e9edf5] pt-[17px] flex items-center justify-between gap-[6px]">
+                <span class="text-[9px] flex gap-[5px] items-center ${isLinked ? 'text-[#162e6e] font-semibold' : 'text-[#68758f]'}">
+                  ● ${isLinked ? 'Tautan tersimpan' : 'Belum terhubung'}
+                </span>
+
+                ${isLinked ? `
+                  <span class="text-[11px] font-bold text-[#162e6e] group-hover:text-[#1e3f94] transition-colors">
+                    Buka dashboard ↗
+                  </span>
+                ` : `
+                  <a href="setting.html" class="text-[11px] font-bold text-[#162e6e] hover:text-[#1e3f94] transition-colors">
+                    Atur tautan ↗
+                  </a>
+                `}
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function openReportModal(id) {
+      const report = state.reports.find((r) => r.id === String(id));
+      if (!report || !isValidUrl(report.embedUrl)) {
+        showToast('Dashboard ini belum memiliki tautan URL yang valid.');
+        return;
+      }
+
+      $('#viewer-category').textContent = report.category || 'Dashboard';
+      $('#viewer-title').textContent = report.title;
+      $('#viewer-desc').textContent = report.description;
+      $('#viewer-external').href = report.embedUrl;
+      $('#viewer-frame').src = report.embedUrl;
+
+      $('#viewer-dialog').showModal();
+    }
+
+    async function loadDashboards(notify = false) {
+      const badge = $('#source-badge');
+      state.loadError = null;
+
+      if (!supabase) {
+        state.reports = Array.isArray(window.REPORTS) ? window.REPORTS.map(normalizeReport) : [];
+        badge.textContent = 'Mode lokal (config.js belum terbaca)';
+        badge.classList.remove('hidden');
+        updateStats();
+        renderFilters();
+        renderCards();
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('reports')
+          .select('*');
+
+        if (error) throw error;
+
+        const normalized = (data || []).map(normalizeReport);
+        normalized.sort((a, b) => {
+          if (a.createdAt && b.createdAt) {
+            return new Date(a.createdAt) - new Date(b.createdAt);
+          }
+          return 0;
+        });
+
+        state.reports = normalized;
+        badge.textContent = 'Tersinkronisasi dengan Supabase';
+        badge.classList.remove('hidden');
+
+        if (notify) showToast('Daftar dashboard berhasil dimuat ulang.');
+      } catch (err) {
+        console.error('Supabase error:', err);
+        state.loadError = err.message || 'Kesalahan tidak diketahui saat mengambil data.';
+        state.reports = Array.isArray(window.REPORTS) ? window.REPORTS.map(normalizeReport) : [];
+        badge.textContent = 'Gagal sinkronisasi';
+        badge.classList.remove('hidden');
+        showToast(`Gagal memuat dari Supabase: ${state.loadError}`);
+      }
+
+      updateStats();
+      renderFilters();
+      renderCards();
+    }
+
+    // Event Listeners
+    $('#nav-logout-btn')?.addEventListener('click', () => {
+      sessionStorage.removeItem('ih_user');
+      window.location.replace('index.html');
+    });
+
+    $('#filter-bar')?.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-cat]');
+      if (!btn) return;
+      state.activeCategory = btn.dataset.cat;
+      renderFilters();
+      renderCards();
+    });
+
+    $('#search-input')?.addEventListener('input', (e) => {
+      state.searchQuery = e.target.value;
+      renderCards();
+    });
+
+    $('#reload-btn')?.addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      btn.disabled = true;
+      await loadDashboards(true);
+      btn.disabled = false;
+    });
+
+    $('#cards-grid')?.addEventListener('click', async (e) => {
+      const retryBtn = e.target.closest('#retry-load-btn');
+      if (retryBtn) {
+        retryBtn.disabled = true;
+        await loadDashboards(true);
+        return;
+      }
+
+      const openCard = e.target.closest('[data-open]');
+      if (openCard) {
+        openReportModal(openCard.dataset.open);
+      }
+    });
+
+    $('#cards-grid')?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        const openCard = e.target.closest('[data-open]');
+        if (openCard) {
+          e.preventDefault();
+          openReportModal(openCard.dataset.open);
+        }
+      }
+    });
+
+    // Kontrol Modal Viewer
+    const viewerDialog = $('#viewer-dialog');
+    const viewerFrame = $('#viewer-frame');
+
+    $('#viewer-close')?.addEventListener('click', () => {
+      viewerFrame.src = 'about:blank';
+      viewerDialog.close();
+    });
+
+    viewerDialog?.addEventListener('close', () => {
+      viewerFrame.src = 'about:blank';
+    });
+
+    $('#viewer-reload')?.addEventListener('click', () => {
+      if (viewerFrame.src && viewerFrame.src !== 'about:blank') {
+        const currentSrc = viewerFrame.src;
+        viewerFrame.src = currentSrc;
+      }
+    });
+
+    $('#viewer-fullscreen')?.addEventListener('click', async () => {
+      try {
+        await viewerFrame.requestFullscreen();
+      } catch {
+        showToast('Mode layar penuh tidak didukung pada perangkat ini.');
+      }
+    });
+
+    // Muat data dashboard saat halaman dibuka
+    await loadDashboards();
+  </script>
+</body>
+</html>

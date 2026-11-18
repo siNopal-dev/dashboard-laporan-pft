@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#162e6e">
+  <meta name="description" content="Kelola daftar dashboard dan integrasi database Supabase pada Insight Hub.">
+  <title>Pengaturan Laporan — Insight Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"DM Sans"', 'sans-serif'],
+            display: ['Manrope', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+</head>
+<!-- Disembunyikan sementara sampai verifikasi sesi selesai -->
+<body id="app-body" class="hidden m-0 bg-[#f4f6fa] text-[#182238] font-sans text-[14px] antialiased selection:bg-[#162e6e] selection:text-white">
+
+  <!-- Top Navbar (Tanpa Sidebar) -->
+  <header class="sticky top-0 z-20 bg-white/90 backdrop-blur-md border-b border-[#dce2ee]">
+    <div class="max-w-[1400px] mx-auto px-5 md:px-[25px] lg:px-[43px]">
+      <div class="h-[64px] lg:h-[76px] flex items-center justify-between gap-4">
+        <div class="flex items-center gap-6 lg:gap-8">
+          <a href="#home" class="flex items-center shrink-0">
+            <img
+              src="logo-pft.jpeg"
+              alt="PT. Prima Fara Textile"
+              class="h-[32px] sm:h-[36px] lg:h-[40px] w-auto object-contain mix-blend-multiply">
+          </a>
+
+          <nav aria-label="Navigasi utama" class="hidden md:flex items-center gap-1.5">
+            <a href="dashboard.html" class="px-3.5 py-2 rounded-[8px] text-[13px] flex items-center gap-2 text-[#68758f] hover:bg-[#f4f6fa] hover:text-[#182238] font-medium transition-colors">
+              <span>▦</span>
+              <span>Semua dashboard</span>
+            </a>
+          </nav>
+        </div>
+
+        <div class="flex items-center gap-2.5 lg:gap-4">
+          <span id="online-status" class="text-[10px] lg:text-[11px] text-[#162e6e] font-medium">● Online</span>
+
+          <button type="button" id="nav-logout-btn" class="bg-white border border-[#dce2ee] hover:border-red-300 hover:bg-red-50 text-red-700 rounded-[7px] px-3 py-1.5 lg:px-3.5 lg:py-2 text-[11px] lg:text-[12px] font-semibold cursor-pointer transition-colors">
+            Keluar
+          </button>
+
+          <div class="hidden sm:flex items-center gap-2.5 pl-2 lg:pl-3 border-l border-[#dce2ee]">
+            <span id="user-avatar" class="bg-[#e6ecf8] text-[#162e6e] font-bold rounded-full grid place-items-center w-[34px] h-[34px] text-[12px]">A</span>
+            <div class="hidden lg:block leading-tight">
+              <div id="user-email-label" class="text-[12px] font-semibold text-[#182238]">Admin Portal</div>
+              <span id="user-role-label" class="text-[10px] text-[#68758f] uppercase">admin</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Konten Utama -->
+  <main class="px-5 py-[26px] md:px-[25px] md:py-[30px] lg:px-[43px] lg:py-[40px] min-h-[calc(100dvh-140px)] max-w-[1400px] mx-auto">
+    <div class="text-[10px] tracking-[2px] font-bold text-[#162e6e]">WORKSPACE ANALITIK</div>
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mt-[8px] mb-[27px]">
+      <div>
+        <h1 class="font-display font-bold text-[27px] lg:text-[30px] tracking-[-1px] mt-[7px] mb-[10px] text-[#182238]">
+          Pengaturan laporan
+        </h1>
+        <p class="text-[#68758f] text-[12px] lg:text-[14px] leading-[1.7] m-0">
+          Tambah, perbarui, dan kelola tautan dashboard yang tersimpan di database Supabase.
+        </p>
+      </div>
+      <div class="flex items-center gap-3 pb-[5px]">
+        <button type="button" id="db-refresh" class="bg-white border border-[#dce2ee] hover:border-[#162e6e]/50 hover:bg-[#e6ecf8]/50 text-[#182238] rounded-[7px] px-3 py-1.5 text-[12px] font-medium cursor-pointer transition-colors">
+          ↻ Muat ulang data
+        </button>
+        <a href="dashboard.html" class="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#162e6e] hover:text-[#1e3f94] hover:underline">
+          ← Ke beranda
+        </a>
+      </div>
+    </div>
+
+    <!-- Grid 2 Kolom: Form di Kiri, Daftar Dashboard di Kanan -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-[22px] items-start">
+      <!-- Panel Form Tambah / Edit Dashboard -->
+      <section class="lg:col-span-5 bg-white border border-[#dce2ee] rounded-[12px] p-[20px] lg:p-[28px]">
+        <div class="flex items-center justify-between gap-2 mb-2">
+          <h2 id="form-heading" class="font-display font-bold text-[18px] m-0 text-[#182238]">
+            Tambah dashboard
+          </h2>
+          <span id="form-mode-badge" class="text-[10px] font-bold tracking-[0.5px] uppercase px-2.5 py-1 rounded-[6px] bg-[#e6ecf8] text-[#162e6e]">
+            Baru
+          </span>
+        </div>
+
+        <p class="text-[12px] leading-[1.7] text-[#68758f] mt-1 mb-5">
+          Masukkan tautan embed atau URL tujuan dashboard. Perubahan tersimpan langsung ke <b class="text-[#162e6e]">Supabase</b>.
+        </p>
+
+        <form id="report-form" class="grid grid-cols-1 sm:grid-cols-2 gap-[16px]" novalidate>
+          <input type="hidden" name="id" id="field-id" value="">
+
+          <label class="block text-[12px] font-medium text-[#182238]">
+            Nama dashboard <span class="text-red-600">*</span>
+            <input
+              type="text"
+              name="title"
+              id="field-title"
+              required
+              maxlength="70"
+              placeholder="Contoh: Penjualan Regional"
+              class="block w-full mt-[8px] px-[12px] py-[11px] border border-[#dce2ee] focus:border-[#162e6e] focus:outline-none rounded-[7px] bg-white text-[#182238] text-[13px] transition-colors"
+            >
+          </label>
+
+          <label class="block text-[12px] font-medium text-[#182238]">
+            Kategori
+            <select
+              name="category"
+              id="field-category"
+              class="block w-full mt-[8px] px-[12px] py-[11px] border border-[#dce2ee] focus:border-[#162e6e] focus:outline-none rounded-[7px] bg-white text-[#182238] text-[13px] transition-colors"
+            >
+              <option value="Penjualan">Penjualan</option>
+              <option value="Keuangan">Keuangan</option>
+              <option value="SDM">SDM</option>
+              <option value="Operasional">Operasional</option>
+              <option value="Produksi">Produksi</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </label>
+
+          <div class="sm:col-span-2">
+            <span class="block text-[12px] font-medium text-[#182238] mb-[8px]">Ikon kartu</span>
+            <div id="icon-picker" class="flex flex-wrap gap-2" role="radiogroup" aria-label="Pilih ikon dashboard">
+              <button type="button" data-icon="▤" aria-checked="true" class="icon-opt w-10 h-10 rounded-[8px] border border-[#162e6e] bg-[#e6ecf8] text-[#162e6e] text-[18px] grid place-items-center transition-colors">▤</button>
+              <button type="button" data-icon="◈" aria-checked="false" class="icon-opt w-10 h-10 rounded-[8px] border border-[#dce2ee] bg-white text-[#68758f] hover:border-[#162e6e]/50 text-[18px] grid place-items-center transition-colors">◈</button>
+              <button type="button" data-icon="♧" aria-checked="false" class="icon-opt w-10 h-10 rounded-[8px] border border-[#dce2ee] bg-white text-[#68758f] hover:border-[#162e6e]/50 text-[18px] grid place-items-center transition-colors">♧</button>
+              <button type="button" data-icon="⚒" aria-checked="false" class="icon-opt w-10 h-10 rounded-[8px] border border-[#dce2ee] bg-white text-[#68758f] hover:border-[#162e6e]/50 text-[18px] grid place-items-center transition-colors">⚒</button>
+              <button type="button" data-icon="▦" aria-checked="false" class="icon-opt w-10 h-10 rounded-[8px] border border-[#dce2ee] bg-white text-[#68758f] hover:border-[#162e6e]/50 text-[18px] grid place-items-center transition-colors">▦</button>
+              <button type="button" data-icon="◎" aria-checked="false" class="icon-opt w-10 h-10 rounded-[8px] border border-[#dce2ee] bg-white text-[#68758f] hover:border-[#162e6e]/50 text-[18px] grid place-items-center transition-colors">◎</button>
+            </div>
+            <input type="hidden" name="icon" id="field-icon" value="▤">
+          </div>
+
+          <label class="sm:col-span-2 block text-[12px] font-medium text-[#182238]">
+            <span class="flex items-center justify-between">
+              <span>Deskripsi singkat <span class="text-red-600">*</span></span>
+              <span id="desc-counter" class="text-[11px] font-normal text-[#68758f]">0/160</span>
+            </span>
+            <input
+              type="text"
+              name="description"
+              id="field-description"
+              required
+              maxlength="160"
+              placeholder="Ringkasan informasi yang ditampilkan pada dashboard"
+              class="block w-full mt-[8px] px-[12px] py-[11px] border border-[#dce2ee] focus:border-[#162e6e] focus:outline-none rounded-[7px] bg-white text-[#182238] text-[13px] transition-colors"
+            >
+          </label>
+
+          <label class="sm:col-span-2 block text-[12px] font-medium text-[#182238]">
+            URL Embed / Tautan Dashboard
+            <input
+              type="url"
+              name="embedUrl"
+              id="field-embedUrl"
+              placeholder="https://..."
+              class="block w-full mt-[8px] mb-[6px] px-[12px] py-[11px] border border-[#dce2ee] focus:border-[#162e6e] focus:outline-none rounded-[7px] bg-white text-[#182238] text-[13px] transition-colors"
+            >
+            <small class="block text-[11px] font-normal leading-[1.6] text-[#68758f]">
+              Opsional. Mendukung tautan <code class="bg-[#e6ecf8] text-[#162e6e] px-1 py-0.5 rounded">https://</code> atau <code class="bg-[#e6ecf8] text-[#162e6e] px-1 py-0.5 rounded">http://</code> dari Power BI, Looker Studio, Google Sheets, maupun sistem internal lainnya.
+            </small>
+          </label>
+
+          <div class="sm:col-span-2 flex flex-wrap items-center gap-[10px] pt-2">
+            <button
+              type="submit"
+              id="submit-btn"
+              class="bg-[#162e6e] hover:bg-[#1e3f94] disabled:opacity-60 text-white border-0 rounded-[7px] px-[18px] py-[12px] font-semibold text-[12px] cursor-pointer transition-colors"
+            >
+              Tambah dashboard
+            </button>
+            <button
+              type="button"
+              id="cancel-btn"
+              class="hidden bg-[#e6ecf8] hover:bg-[#dce2ee] text-[#162e6e] border-0 rounded-[7px] px-[16px] py-[12px] font-semibold text-[12px] cursor-pointer transition-colors"
+            >
+              Batal edit
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Panel Daftar Dashboard yang Sudah Ada -->
+      <section class="lg:col-span-7 bg-white border border-[#dce2ee] rounded-[12px] p-[20px] lg:p-[28px]">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+          <div class="flex items-center gap-2">
+            <h2 class="font-display font-bold text-[18px] m-0 text-[#182238]">
+              Daftar dashboard
+            </h2>
+            <span id="total-badge" class="text-[11px] bg-[#e6ecf8] text-[#162e6e] rounded-[6px] px-[8px] py-[3px] font-semibold">
+              0
+            </span>
+          </div>
+
+          <input
+            type="search"
+            id="search-reports"
+            aria-label="Cari dashboard tersimpan"
+            placeholder="⌕  Cari nama atau kategori…"
+            class="w-full sm:w-[240px] bg-[#f4f6fa] border border-[#dce2ee] focus:border-[#162e6e] focus:bg-white focus:outline-none rounded-[7px] px-[13px] py-[9px] text-[12px] text-[#182238] transition-colors"
+          >
+        </div>
+
+        <div id="report-list" class="divide-y divide-[#dce2ee] border-t border-b border-[#dce2ee]">
+          <div class="py-10 text-center text-[12px] text-[#68758f]">Memuat data dari Supabase…</div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-[#dce2ee]">
+    <div class="max-w-[1400px] mx-auto flex justify-between items-center px-5 md:px-[25px] lg:px-[43px] py-[20px] lg:py-[22px] text-[#68758f] text-[9px] lg:text-[10px]">
+      <span>Insight Hub <i class="mx-[8px] not-italic">·</i> Ruang untuk keputusan yang lebih baik.</span>
+      <span class="hidden sm:inline">POWERED BY <b class="text-[#162e6e] ml-[6px]">Power BI</b></span>
+    </div>
+  </footer>
+
+  <!-- Dialog Konfirmasi Hapus -->
+  <dialog id="delete-dialog" class="rounded-[12px] border border-[#dce2ee] p-0 bg-white text-[#182238] shadow-xl max-w-[400px] w-[92%] backdrop:bg-[#112457]/50">
+    <div class="p-6">
+      <div class="w-10 h-10 rounded-[10px] bg-red-50 text-red-600 grid place-items-center text-[18px] font-bold mb-4">!</div>
+      <h3 class="font-display font-bold text-[17px] m-0 text-[#182238]">Hapus dashboard ini?</h3>
+      <p id="delete-dialog-desc" class="text-[12px] leading-[1.7] text-[#68758f] mt-2 mb-6">
+        Tindakan ini akan menghapus dashboard dari daftar secara permanen.
+      </p>
+      <div class="flex justify-end gap-2.5">
+        <button type="button" id="delete-cancel" class="bg-[#f4f6fa] hover:bg-[#e6ecf8] text-[#182238] border border-[#dce2ee] rounded-[7px] px-4 py-2.5 text-[12px] font-semibold cursor-pointer transition-colors">
+          Batal
+        </button>
+        <button type="button" id="delete-confirm" class="bg-red-600 hover:bg-red-700 disabled:opacity-60 text-white border-0 rounded-[7px] px-4 py-2.5 text-[12px] font-semibold cursor-pointer transition-colors">
+          Ya, hapus
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Toast Notification -->
+  <div id="toast" role="status" aria-live="polite" class="hidden fixed bottom-[25px] left-1/2 -translate-x-1/2 bg-[#112457] text-white border border-[#2a478f] px-[20px] py-[12px] rounded-[8px] shadow-lg z-30 text-[12px] font-medium"></div>
+
+  <script src="config.js"></script>
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.8';
+
+    const SUPABASE_URL = window.SUPABASE?.url || '';
+    const SUPABASE_KEY = window.SUPABASE?.publishableKey || '';
+
+    // 1. AUTH GUARD (Sesi dan Token Administrator)
+    const rawUser = sessionStorage.getItem('ih_user');
+    if (!rawUser || !SUPABASE_URL || !SUPABASE_KEY) {
+      window.location.replace('login.html?redirect=setting.html');
+      throw new Error('Belum login, mengalihkan ke halaman login...');
+    }
+
+    let currentUser;
+    try {
+      currentUser = JSON.parse(rawUser);
+    } catch {
+      sessionStorage.removeItem('ih_user');
+      window.location.replace('login.html?redirect=setting.html');
+      throw new Error('Data sesi tidak valid.');
+    }
+
+    if (!currentUser?.token || currentUser?.role !== 'admin') {
+      sessionStorage.removeItem('ih_user');
+      window.location.replace('login.html?redirect=setting.html');
+      throw new Error('Token sesi tidak ditemukan, silakan login ulang.');
+    }
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Tampilkan halaman dan info profil pengguna
+    document.getElementById('app-body').classList.remove('hidden');
+    document.getElementById('user-email-label').textContent = currentUser.username || 'Admin';
+    document.getElementById('user-role-label').textContent = currentUser.role || 'admin';
+    document.getElementById('user-avatar').textContent = (currentUser.username?.[0] || 'A').toUpperCase();
+
+    // 2. LOGIKA CRUD DASHBOARD SUPABASE (VIA RPC ADMIN)
+    const $ = (sel) => document.querySelector(sel);
+    const esc = (str) => String(str ?? '').replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+
+    const state = {
+      isAdmin: currentUser.role === 'admin',
+      reports: [],
+      searchQuery: '',
+      editingId: null,
+      deletingId: null
+    };
+
+    let toastTimer;
+    function showToast(msg) {
+      const el = $('#toast');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.add('hidden'), 3500);
+    }
+
+    function handleAuthError(err) {
+      const msg = err?.message || 'Terjadi kesalahan saat memproses permintaan.';
+      showToast(msg);
+      if (msg.includes('Sesi administrator')) {
+        sessionStorage.removeItem('ih_user');
+        setTimeout(() => {
+          window.location.replace('login.html?redirect=setting.html');
+        }, 1500);
+      }
+    }
+
+    // Menerima semua tautan HTTP / HTTPS yang valid
+    function isValidUrl(urlStr) {
+      if (!urlStr) return false;
+      try {
+        const u = new URL(urlStr.trim());
+        return ['http:', 'https:'].includes(u.protocol);
+      } catch {
+        return false;
+      }
+    }
+
+    function selectIcon(iconChar) {
+      const chosen = iconChar || '▤';
+      $('#field-icon').value = chosen;
+      document.querySelectorAll('.icon-opt').forEach((btn) => {
+        const active = btn.dataset.icon === chosen;
+        btn.setAttribute('aria-checked', String(active));
+        btn.className = active
+          ? 'icon-opt w-10 h-10 rounded-[8px] border border-[#162e6e] bg-[#e6ecf8] text-[#162e6e] text-[18px] grid place-items-center transition-colors cursor-pointer'
+          : 'icon-opt w-10 h-10 rounded-[8px] border border-[#dce2ee] bg-white text-[#68758f] hover:border-[#162e6e]/50 text-[18px] grid place-items-center transition-colors cursor-pointer';
+      });
+    }
+
+    function updateCounter() {
+      $('#desc-counter').textContent = `${$('#field-description').value.length}/160`;
+    }
+
+    function resetForm() {
+      state.editingId = null;
+      $('#report-form').reset();
+      $('#field-id').value = '';
+      selectIcon('▤');
+      updateCounter();
+      $('#form-heading').textContent = 'Tambah dashboard';
+      $('#form-mode-badge').textContent = 'Baru';
+      $('#form-mode-badge').className = 'text-[10px] font-bold tracking-[0.5px] uppercase px-2.5 py-1 rounded-[6px] bg-[#e6ecf8] text-[#162e6e]';
+      $('#submit-btn').textContent = 'Tambah dashboard';
+      $('#cancel-btn').classList.add('hidden');
+    }
+
+    function startEdit(id) {
+      const item = state.reports.find((r) => r.id === id);
+      if (!item) return;
+
+      state.editingId = item.id;
+      $('#field-id').value = item.id;
+      $('#field-title').value = item.title;
+      $('#field-category').value = item.category || 'Lainnya';
+      $('#field-description').value = item.description;
+      $('#field-embedUrl').value = item.embedUrl || '';
+      selectIcon(item.icon || '▤');
+      updateCounter();
+
+      $('#form-heading').textContent = 'Edit dashboard';
+      $('#form-mode-badge').textContent = 'Mode Edit';
+      $('#form-mode-badge').className = 'text-[10px] font-bold tracking-[0.5px] uppercase px-2.5 py-1 rounded-[6px] bg-[#f3d46b]/40 text-[#182238]';
+      $('#submit-btn').textContent = 'Simpan perubahan';
+      $('#cancel-btn').classList.remove('hidden');
+
+      $('#field-title').focus();
+      $('#report-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function renderReportList() {
+      const container = $('#report-list');
+      const q = state.searchQuery.trim().toLowerCase();
+      const filtered = state.reports.filter((r) =>
+        `${r.title} ${r.category} ${r.description}`.toLowerCase().includes(q)
+      );
+
+      $('#total-badge').textContent = state.reports.length;
+
+      if (!filtered.length) {
+        container.innerHTML = `
+          <div class="py-12 px-4 text-center">
+            <div class="w-11 h-11 rounded-[10px] bg-[#e6ecf8] text-[#162e6e] grid place-items-center text-[20px] mx-auto mb-3">▤</div>
+            <h3 class="font-display font-bold text-[15px] m-0 text-[#182238]">Belum ada dashboard ditemukan</h3>
+            <p class="text-[12px] text-[#68758f] mt-1 mb-0">
+              ${q ? 'Coba ubah kata kunci pencarian Anda.' : 'Tambahkan dashboard pertama Anda melalui formulir di samping.'}
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map((item) => {
+        const hasValidUrl = isValidUrl(item.embedUrl);
+        const isBeingEdited = state.editingId === item.id;
+
+        return `
+          <div class="py-4 px-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors ${isBeingEdited ? 'bg-[#e6ecf8]/40 rounded-[8px]' : ''}">
+            <div class="flex items-start gap-3.5 min-w-0">
+              <span class="w-10 h-10 rounded-[10px] bg-[#e6ecf8] text-[#162e6e] grid place-items-center text-[18px] shrink-0 mt-0.5">
+                ${esc(item.icon || '▤')}
+              </span>
+              <div class="min-w-0">
+                <div class="flex flex-wrap items-center gap-2">
+                  <h3 class="font-display font-bold text-[14px] m-0 text-[#182238] truncate">${esc(item.title)}</h3>
+                  <span class="text-[10px] font-semibold uppercase tracking-[0.8px] px-2 py-0.5 rounded bg-[#f4f6fa] border border-[#dce2ee] text-[#68758f]">
+                    ${esc(item.category)}
+                  </span>
+                </div>
+                <p class="text-[12px] text-[#68758f] mt-1 mb-1.5 line-clamp-1">${esc(item.description)}</p>
+                <span class="inline-flex items-center gap-1.5 text-[11px] font-medium ${hasValidUrl ? 'text-[#162e6e]' : 'text-[#68758f]'}">
+                  ● ${hasValidUrl ? 'Tautan tersimpan' : 'Belum terhubung ke URL'}
+                </span>
+              </div>
+            </div>
+
+            ${state.isAdmin ? `
+              <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                <button type="button" data-edit="${esc(item.id)}" class="bg-white border border-[#dce2ee] hover:border-[#162e6e] hover:bg-[#e6ecf8]/60 text-[#162e6e] rounded-[6px] px-3 py-1.5 text-[12px] font-semibold cursor-pointer transition-colors">
+                  Edit
+                </button>
+                <button type="button" data-delete="${esc(item.id)}" class="bg-white border border-[#dce2ee] hover:border-red-300 hover:bg-red-50 text-red-700 rounded-[6px] px-3 py-1.5 text-[12px] font-semibold cursor-pointer transition-colors">
+                  Hapus
+                </button>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function loadReports() {
+      const { data, error } = await supabase
+        .from('reports')
+        .select('*')
+        .order('created_at', { ascending: true });
+
+      if (error) {
+        $('#report-list').innerHTML = `
+          <div class="py-8 px-4 text-center text-red-700 text-[12px]">
+            Gagal memuat data: ${esc(error.message)}
+          </div>
+        `;
+        showToast(`Gagal memuat data: ${error.message}`);
+        return;
+      }
+
+      state.reports = (data || []).map(({ embed_url, ...rest }) => ({
+        ...rest,
+        embedUrl: embed_url || ''
+      }));
+      renderReportList();
+    }
+
+    // Event Listeners
+    document.querySelectorAll('.icon-opt').forEach((btn) => {
+      btn.addEventListener('click', () => selectIcon(btn.dataset.icon));
+    });
+
+    $('#field-description').addEventListener('input', updateCounter);
+    $('#cancel-btn').addEventListener('click', resetForm);
+
+    $('#search-reports').addEventListener('input', (e) => {
+      state.searchQuery = e.target.value;
+      renderReportList();
+    });
+
+    $('#db-refresh').addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      btn.disabled = true;
+      await loadReports();
+      btn.disabled = false;
+      showToast('Data berhasil dimuat ulang.');
+    });
+
+    $('#nav-logout-btn').addEventListener('click', () => {
+      sessionStorage.removeItem('ih_user');
+      window.location.replace('login.html');
+    });
+
+    $('#report-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!state.isAdmin || !currentUser?.token) {
+        showToast('Sesi tidak valid. Silakan login ulang.');
+        return;
+      }
+
+      const title = $('#field-title').value.trim();
+      const category = $('#field-category').value;
+      const icon = $('#field-icon').value || '▤';
+      const description = $('#field-description').value.trim();
+      const embedUrl = $('#field-embedUrl').value.trim();
+
+      if (!title || !description) {
+        showToast('Nama dashboard dan deskripsi wajib diisi.');
+        return;
+      }
+
+      if (embedUrl && !isValidUrl(embedUrl)) {
+        showToast('Masukkan format URL yang valid (diawali https:// atau http://).');
+        return;
+      }
+
+      const isEdit = Boolean(state.editingId);
+      const id = state.editingId || crypto.randomUUID();
+      const submitBtn = $('#submit-btn');
+      submitBtn.disabled = true;
+
+      try {
+        const { data, error } = await supabase.rpc('simpan_report', {
+          p_token: currentUser.token,
+          p_id: id,
+          p_title: title,
+          p_category: category,
+          p_description: description,
+          p_icon: icon,
+          p_embed_url: embedUrl
+        });
+
+        if (error) throw error;
+        if (!data?.length) throw new Error('Data gagal disimpan ke Supabase.');
+
+        await loadReports();
+        resetForm();
+        showToast(isEdit ? 'Perubahan dashboard berhasil disimpan.' : 'Dashboard baru berhasil ditambahkan.');
+      } catch (err) {
+        handleAuthError(err);
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    $('#report-list').addEventListener('click', (e) => {
+      const editBtn = e.target.closest('[data-edit]');
+      if (editBtn) {
+        startEdit(editBtn.dataset.edit);
+        return;
+      }
+
+      const deleteBtn = e.target.closest('[data-delete]');
+      if (deleteBtn) {
+        const id = deleteBtn.dataset.delete;
+        const target = state.reports.find((r) => r.id === id);
+        if (!target) return;
+
+        state.deletingId = id;
+        $('#delete-dialog-desc').innerHTML = `Dashboard <b class="text-[#182238]">${esc(target.title)}</b> akan dihapus secara permanen.`;
+        $('#delete-dialog').showModal();
+      }
+    });
+
+    $('#delete-cancel').addEventListener('click', () => {
+      state.deletingId = null;
+      $('#delete-dialog').close();
+    });
+
+    $('#delete-confirm').addEventListener('click', async () => {
+      const id = state.deletingId;
+      if (!id) return;
+
+      const confirmBtn = $('#delete-confirm');
+      confirmBtn.disabled = true;
+
+      try {
+        const { data, error } = await supabase.rpc('hapus_report', {
+          p_token: currentUser.token,
+          p_id: id
+        });
+
+        if (error) throw error;
+        if (!data) throw new Error('Dashboard tidak ditemukan atau gagal dihapus.');
+
+        if (state.editingId === id) resetForm();
+        $('#delete-dialog').close();
+        state.deletingId = null;
+        await loadReports();
+        showToast('Dashboard telah dihapus.');
+      } catch (err) {
+        handleAuthError(err);
+      } finally {
+        confirmBtn.disabled = false;
+      }
+    });
+
+    // Pembaruan status koneksi jaringan
+    function updateNetworkStatus() {
+      $('#online-status').textContent = navigator.onLine ? '● Online' : '○ Offline';
+    }
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+    updateNetworkStatus();
+
+    // Muat data awal dari Supabase
+    await loadReports();
+  </script>
+</body>
+</html>
